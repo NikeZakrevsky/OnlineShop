@@ -16,6 +16,11 @@ public class Products implements Serializable {
     private Long stockId;
     private String title;
     private String description;
+    private int views;
+    private String createDate;
+    private String updateDate;
+    private int price;
+    private int stars;
     private Set<Category> categories = new HashSet<Category>(0);
 
 
@@ -62,6 +67,51 @@ public class Products implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(name = "views", nullable = false)
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
+    @Column(name = "created", nullable = false)
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    @Column(name = "updated", nullable = false)
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    @Column(name = "price", nullable = false)
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    @Column(name = "stars", nullable = false)
+    public int getStars() {
+        return stars;
+    }
+
+    public void setStars(int stars) {
+        this.stars = stars;
     }
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
