@@ -2,19 +2,29 @@ package com.nike.dao;
 
 import com.nike.model.Category;
 import com.nike.model.Products;
-import com.nike.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Transactional
 public class DAOImpl implements DAO {
+
+    private SessionFactory sessionFactory;
+
+    public DAOImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public void saveProduct() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
         Products product = new Products();
         product.setTitle("title");
@@ -47,7 +57,7 @@ public class DAOImpl implements DAO {
 
     @Override
     public Set<Products> getProductsList(String categoryName) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
 
         List<Category> list = session.createCriteria(Category.class).list();
@@ -62,4 +72,6 @@ public class DAOImpl implements DAO {
     public Products getProductById(String stockCode) {
         return null;
     }
+
+
 }

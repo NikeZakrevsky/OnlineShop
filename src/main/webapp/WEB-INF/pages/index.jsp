@@ -37,10 +37,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">OnlineShop</a>
+                <a class="navbar-brand" href="/index">OnlineShop</a>
             </div>
                 <div class="navbar-collapse collapse" id="navbar-main">
-                    <form class="navbar-form navbar-right" role="search">
+                    <form class="navbar-form navbar-right" role="search" action="/login">
                         <button type="submit" class="btn btn-default">Sign In</button>
                     </form>
                 </div>
@@ -137,7 +137,7 @@
         <footer>
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Copyright &copy; Your Website 2014</p>
+                    <p>Copyright &copy; OnlineShop 2016</p>
                 </div>
             </div>
         </footer>
