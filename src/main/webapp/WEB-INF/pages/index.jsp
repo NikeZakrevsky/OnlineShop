@@ -28,6 +28,17 @@
 </head>
 
 <body>
+
+<c:url value="/j_spring_security_logout" var="logoutUrl" />
+<form action="${logoutUrl}" method="post" id="logoutForm">
+    <input type="hidden" name="${_csrf.parameterName}"
+           value="${_csrf.token}" />
+</form>
+<script>
+    function formSubmit() {
+        document.getElementById("logoutForm").submit();
+    }
+</script>
     <!-- Navigation -->
     <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
@@ -39,11 +50,23 @@
                 </button>
                 <a class="navbar-brand" href="/index">OnlineShop</a>
             </div>
-                <div class="navbar-collapse collapse" id="navbar-main">
-                    <form class="navbar-form navbar-right" role="search" action="/login">
-                        <button type="submit" class="btn btn-default">Sign In</button>
-                    </form>
+            <form class="navbar-form navbar-right" role="search" action="/cartPage">
+                <button type="submit" class="btn btn-default">
+                    <span class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart
+                </button>
+            </form>
+            <div class="navbar-collapse navbar-right navbar-brand" id="navbar-main">
+                <div class="navbar-header">
+                    <c:if test="${not empty pageContext.request.userPrincipal.name}">
+                        User : ${pageContext.request.userPrincipal.name} | <a href = "javascript:formSubmit()"> Logout</a>
+                    </c:if>
                 </div>
+            </div>
+            <c:if test="${empty pageContext.request.userPrincipal.name}">
+                <form class="navbar-form navbar-right" role="search" action="/login">
+                    <button type="submit" class="btn btn-default">Sign In</button>
+                </form>
+            </c:if>
         </div>
     </div>
 
@@ -101,7 +124,7 @@
                                 <cl:image src="320x150_e1zkhm" format="jpg" width="320" height="150" crop="fill"/>
                                 <div class="caption">
                                     <h4 class="pull-right">$${listValue.price}</h4>
-                                    <h4><a href="#">${listValue.title}</a>
+                                    <h4><a href="/addProduct?productId=${listValue.product_id}">${listValue.title}</a>
                                     </h4>
                                     <p>${listValue.description}</p>
                                 </div>

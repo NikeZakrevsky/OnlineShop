@@ -60,7 +60,7 @@ public class Category {
         this.description = description;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categories")
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "categories")
     public Set<Products> getCategories() {
         return categories;
     }

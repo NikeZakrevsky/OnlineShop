@@ -35,6 +35,9 @@
             <list>
                 <value>com.nike.model.Category</value>
                 <value>com.nike.model.Products</value>
+                <value>com.nike.model.User</value>
+                <value>com.nike.model.Role</value>
+                <value>com.nike.model.Order</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -47,6 +50,12 @@
     </bean>
 
     <bean id="DAO" class="com.nike.dao.DAOImpl">
+        <constructor-arg>
+            <ref bean="sessionFactory" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="UserDAO" class="com.nike.dao.UserDAOImpl">
         <constructor-arg>
             <ref bean="sessionFactory" />
         </constructor-arg>

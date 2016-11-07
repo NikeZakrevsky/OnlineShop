@@ -1,17 +1,19 @@
 package com.nike.dao;
 
 import com.nike.model.Category;
+import com.nike.model.Order;
 import com.nike.model.Products;
+import com.nike.model.User;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Transactional
 public class DAOImpl implements DAO {
@@ -22,27 +24,37 @@ public class DAOImpl implements DAO {
         this.sessionFactory = sessionFactory;
     }
 
+
+
     @Override
     public void saveProduct() {
-        Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        Products product = new Products();
-        product.setTitle("title");
-        product.setDescription("description");
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Products product = new Products();
+            product.setTitle("title");
+            product.setDescription("description");
 
-        Category category = new Category();
-        category.setTitle("title");
-        category.setDescription("description");
+            Category category = new Category();
+            category.setTitle("title");
+            category.setDescription("description");
 
-        Set<Category> catedories = new HashSet<Category>();
-        catedories.add(category);
+            Set<Category> catedories = new HashSet<Category>();
+            catedories.add(category);
 
-        product.setCategories(catedories);
+            product.setCategories(catedories);
 
-        session.save(product);
+            session.save(product);
 
-        session.getTransaction().commit();
-        System.out.println("Done");
+            tx.commit();
+        } catch (HibernateException e) {
+            if(tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
     }
 
     @Override
@@ -55,22 +67,97 @@ public class DAOImpl implements DAO {
 
     }
 
+
+
     @Override
     public Set<Products> getProductsList(String categoryName) {
-        Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-
-        List<Category> list = session.createCriteria(Category.class).list();
-        Optional<Category> c = list.stream().filter(category -> category.getTitle().equals(categoryName)).findFirst();
-        c.get().getCategories().forEach(qwe -> System.out.println(qwe.getTitle()));
-        Set<Products> list2 = c.get().getCategories();
-        session.getTransaction().commit();
-        return list2;
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        Set productsList = null;
+        try {
+            tx = session.beginTransaction();
+            List<Category> list = session.createCriteria(Category.class).list();
+            for (Category c : list) {
+                System.out.println("category" + c.getTitle());
+                if (c.getTitle().equals(categoryName)) {
+                    productsList  = c.getCategories();
+                    return productsList ;
+                }
+            }
+            tx.commit();
+        }
+        catch (HibernateException e) {
+            if(tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return productsList;
     }
 
     @Override
-    public Products getProductById(String stockCode) {
+    public Products getProductById(Integer pr_id) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try{
+            tx = session.beginTransaction();
+            List<Products> products = session.createQuery("from Products where product_id=?").setParameter(0, pr_id).list();
+            System.out.println(products.get(0).getTitle());
+            tx.commit();
+            return products.get(0);
+        } catch(HibernateException e) {
+            if(tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
         return null;
+    }
+
+    @Override
+    public void addOrder(Products product, User user) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
+            Order order = new Order();
+            order.setProduct_id(product);
+            order.setUsername(user);
+            Set<Order> orders = new HashSet<>();
+            orders.add(order);
+            user.setOrders(orders);
+            session.save(order);
+            tx.commit();
+        }
+        catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+
+    }
+
+    @Override
+    public List<Order> getOrdersList(User user) {
+        Session session = sessionFactory.openSession();
+        Transaction tx = null;
+        List<Order> orders = null;
+        List<Order> userOrders = new ArrayList<>();
+        try{
+            tx = session.beginTransaction();
+            orders = session.createQuery("from Order").list();
+            for(Order order : orders)
+                if(order.getUsername().getUsername().equals(user.getUsername()))
+                    userOrders.add(order);
+            tx.commit();
+        } catch(HibernateException e) {
+            if(tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return userOrders;
     }
 
 

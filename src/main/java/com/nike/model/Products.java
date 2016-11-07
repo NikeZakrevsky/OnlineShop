@@ -13,7 +13,7 @@ public class Products implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long stockId;
+    private Integer product_id;
     private String title;
     private String description;
     private int views;
@@ -28,13 +28,11 @@ public class Products implements Serializable {
     }
 
     public Products(String title, String description) {
-        this.stockId = stockId;
         this.title = title;
         this.description = description;
     }
 
     public Products(String title, String description, Set<Category> categories) {
-        this.stockId = stockId;
         this.title = title;
         this.description = description;
         this.categories = categories;
@@ -42,13 +40,13 @@ public class Products implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    public Long getStockId() {
-        return stockId;
+    @Column(name = "product_id", unique = true, nullable = false)
+    public Integer getProduct_id() {
+        return product_id;
     }
 
-    public void setStockId(Long stockId) {
-        this.stockId = stockId;
+    public void setProduct_id(Integer product_id) {
+        this.product_id = product_id;
     }
 
     @Column(name = "title", nullable = false)
